@@ -13,7 +13,7 @@ class bitfinex2 extends bitfinex {
         return array_replace_recursive (parent::describe (), array (
             'id' => 'bitfinex2',
             'name' => 'Bitfinex v2',
-            'countries' => 'VG',
+            'countries' => array ( 'VG' ),
             'version' => 'v2',
             // new metainfo interface
             'has' => array (
@@ -78,11 +78,11 @@ class bitfinex2 extends bitfinex {
                         'book/{symbol}/P2',
                         'book/{symbol}/P3',
                         'book/{symbol}/R0',
-                        'stats1/{key}:{size}:{symbol}/{side}/{section}',
-                        'stats1/{key}:{size}:{symbol}/long/last',
-                        'stats1/{key}:{size}:{symbol}/long/hist',
-                        'stats1/{key}:{size}:{symbol}/short/last',
-                        'stats1/{key}:{size}:{symbol}/short/hist',
+                        'stats1/{key}:{size}:{symbol}:{side}/{section}',
+                        'stats1/{key}:{size}:{symbol}:long/last',
+                        'stats1/{key}:{size}:{symbol}:long/hist',
+                        'stats1/{key}:{size}:{symbol}:short/last',
+                        'stats1/{key}:{size}:{symbol}:short/hist',
                         'candles/trade:{timeframe}:{symbol}/{section}',
                         'candles/trade:{timeframe}:{symbol}/last',
                         'candles/trade:{timeframe}:{symbol}/hist',
@@ -239,6 +239,8 @@ class bitfinex2 extends bitfinex {
                     $currency = mb_substr ($currency, 1);
                     $code = strtoupper ($currency);
                     $code = $this->common_currency_code($code);
+                } else {
+                    $code = $this->common_currency_code($code);
                 }
                 $account = $this->account ();
                 $account['total'] = $total;
@@ -247,7 +249,7 @@ class bitfinex2 extends bitfinex {
                         $account['free'] = 0;
                         $account['used'] = $total;
                     } else {
-                        $account['free'] = null;
+                        $account['free'] = $total;
                     }
                 } else {
                     $account['free'] = $available;
@@ -309,7 +311,7 @@ class bitfinex2 extends bitfinex {
             'last' => $last,
             'previousClose' => null,
             'change' => $ticker[$length - 6],
-            'percentage' => $ticker[$length - 5],
+            'percentage' => $ticker[$length - 5] * 100,
             'average' => null,
             'baseVolume' => $ticker[$length - 3],
             'quoteVolume' => null,
